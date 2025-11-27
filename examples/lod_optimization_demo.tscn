@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[sub_resource type="GDScript" id=1]
+script/source_code = "extends Node3D\n\nfunc _ready():\n\tvar terrain = TerrainGenerator.create_terrain({\"width\": 64, \"depth\": 64, \"scale\": 1.0, \"height_scale\": 20.0, \"noise_type\": \"perlin\", \"noise_seed\": 42})\n\tvar optimized = TerrainGenerator.optimize_mesh(terrain.mesh, {\"lod_levels\": 3, \"target_reduction\": [0.5, 0.25, 0.1]})\n\tterrain.mesh = optimized\n\tadd_child(terrain)\n"
+
+[node name="DemoLOD" type="Node3D"]
+script = SubResource(1)

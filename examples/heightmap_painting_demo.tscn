@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[sub_resource type="GDScript" id=1]
+script/source_code = "extends Node3D\n\nfunc _ready():\n\tvar terrain = TerrainGenerator.create_terrain({\"width\": 64, \"depth\": 64, \"scale\": 1.0, \"height_scale\": 20.0, \"noise_type\": \"perlin\", \"noise_seed\": 7})\n\tTerrainGenerator.paint_by_height(terrain, {\"height_layers\": []})\n\tadd_child(terrain)\n"
+
+[node name="DemoPaint" type="Node3D"]
+script = SubResource(1)
