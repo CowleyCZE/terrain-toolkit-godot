@@ -35,5 +35,34 @@ static func optimize_mesh(mesh: ArrayMesh, options: Dictionary) -> ArrayMesh:
     return MeshUtils.optimize_mesh_lod(mesh, lod_levels, target_reduction)
 
 static func paint_by_height(node: Node3D, config: Dictionary) -> void:
-    var _layers := config.get("height_layers", [])
-    pass
+    var layers := config.get("height_layers", [])
+    var mat := ShaderMaterial.new()
+    mat.shader = load("res://src/utils/height_paint.gdshader")
+    if layers is Array and layers.size() > 0:
+        layers.sort_custom(func(a, b):
+            return float(a.get("max", 0.0)) < float(b.get("max", 0.0))
+        )
+        var defaults := [
+            {"max": 50.0, "color": Color(0.8, 0.7, 0.5)},
+            {"max": 100.0, "color": Color(0.3, 0.6, 0.3)},
+            {"max": 200.0, "color": Color(0.5, 0.5, 0.5)},
+            {"max": 99999.0, "color": Color(0.9, 0.9, 0.9)}
+        ]
+        var merged := []
+        for i in range(4):
+            var src := i < layers.size() ? layers[i] : defaults[i]
+            merged.append(src)
+        mat.set_shader_parameter("t1", float(merged[0].get("max", 50.0)))
+        mat.set_shader_parameter("t2", float(merged[1].get("max", 100.0)))
+        mat.set_shader_parameter("t3", float(merged[2].get("max", 200.0)))
+        var c1 := merged[0].get("color", Color(0.8, 0.7, 0.5))
+        var c2 := merged[1].get("color", Color(0.3, 0.6, 0.3))
+        var c3 := merged[2].get("color", Color(0.5, 0.5, 0.5))
+        var c4 := merged[3].get("color", Color(0.9, 0.9, 0.9))
+        mat.set_shader_parameter("c1", Vector3(c1.r, c1.g, c1.b))
+        mat.set_shader_parameter("c2", Vector3(c2.r, c2.g, c2.b))
+        mat.set_shader_parameter("c3", Vector3(c3.r, c3.g, c3.b))
+        mat.set_shader_parameter("c4", Vector3(c4.r, c4.g, c4.b))
+    var mi := node as MeshInstance3D
+    if mi != null:
+        mi.material_override = mat
