@@ -1,0 +1,4 @@
+name: heightmap_generator
+version: 0.1
+steps:
+  - generate_heightmap

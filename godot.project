@@ -1,0 +1,7 @@
+config_version=5
+
+[application]
+config/name="Terrain Toolkit"
+
+[rendering]
+quality/driver/driver_name="Vulkan"

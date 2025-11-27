@@ -1,0 +1,4 @@
+name: asset_exporter
+version: 0.1
+steps:
+  - export_assets
