@@ -63,6 +63,23 @@ static func paint_by_height(node: Node3D, config: Dictionary) -> void:
         mat.set_shader_parameter("c2", Vector3(c2.r, c2.g, c2.b))
         mat.set_shader_parameter("c3", Vector3(c3.r, c3.g, c3.b))
         mat.set_shader_parameter("c4", Vector3(c4.r, c4.g, c4.b))
+        var tex_keys := ["tex1", "tex2", "tex3", "tex4"]
+        var use_keys := ["use_tex1", "use_tex2", "use_tex3", "use_tex4"]
+        var tile_keys := ["tile1", "tile2", "tile3", "tile4"]
+        for i in range(4):
+            var layer := merged[i]
+            var tile := float(layer.get("tile", 1.0))
+            mat.set_shader_parameter(tile_keys[i], tile)
+            var tex_val := layer.get("texture", null)
+            if tex_val != null:
+                var tex: Texture2D
+                if typeof(tex_val) == TYPE_STRING:
+                    tex = load(tex_val)
+                elif tex_val is Texture2D:
+                    tex = tex_val
+                if tex != null:
+                    mat.set_shader_parameter(tex_keys[i], tex)
+                    mat.set_shader_parameter(use_keys[i], true)
     var mi := node as MeshInstance3D
     if mi != null:
         mi.material_override = mat
